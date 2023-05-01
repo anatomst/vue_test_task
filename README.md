@@ -5,4 +5,10 @@
 npm i
 npm run serve
 ```
-# vue_test_task
+
+## Run using Docker
+```
+docker build -t vue_anatomst .
+docker run -it -p 8080:8080 vue_anatomst
+
+```
