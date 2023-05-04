@@ -29,7 +29,6 @@ import { onMounted } from '@vue/runtime-core';
 import MoviesList from '@/components/MoviesList.vue';
 import { useRedirectTo } from '@/hooks/useRedirectTo';
 import MoviesCarousel from '@/components/MoviesCarousel.vue';
-
 export default {
   name: 'HomeView',
   components: { MoviesList, MoviesCarousel },
@@ -37,8 +36,8 @@ export default {
     screenWidth: { type: Number, default: 0 },
     selectedMovie: { type: Number, default: 1 },
   },
-  emits: ['change-movie'],
-  setup() {
+  emits: ['change-movie', 'update-movies-list'],
+  setup(_, context) {
     const movies = ref([]);
     const page = ref(1);
     const isNextPage = ref(true);
@@ -59,6 +58,7 @@ export default {
       }
 
       movies.value = [...movies.value, ...results];
+      context.emit('update-movies-list', [...movies.value, ...results]);
     };
 
     onMounted(getMovies);

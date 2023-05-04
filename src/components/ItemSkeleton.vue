@@ -14,7 +14,7 @@ export default {};
 <style lang="scss" scoped>
 .movie-skeleton {
   &__poster {
-    width: 164p;
+    width: 164px;
     height: 215px;
     background-color: #303030;
     margin-bottom: 12px;

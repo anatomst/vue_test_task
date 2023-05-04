@@ -1,13 +1,15 @@
 <template>
-  <router-view v-if="width < 900" />
+  <router-view v-if="width < 900" @update-movies-list="updateMoviesList" :selectedMovie="selectedMovie" :moviesList="moviesList"
+  />
   <div class="large" v-else>
     <div class="large__wrapper">
       <home-view
         :screenWidth="width"
         :selectedMovie="selectedMovie"
         @change-movie="handleChangeMovie"
+        @update-movies-list="updateMoviesList"
       />
-      <movie-view :selectedMovie="selectedMovie" :screenWidth="width" />
+      <movie-view :selectedMovie="selectedMovie" :moviesList="moviesList" :screenWidth="width" />
     </div>
   </div>
 </template>
@@ -25,14 +27,18 @@ export default {
   setup() {
     const { width, onWidthChange } = useBreakpoints();
     const selectedMovie = ref(1);
-
+    const moviesList = ref([]);
     const handleChangeMovie = (movieId) => {
       selectedMovie.value = movieId;
     };
 
+    const updateMoviesList = (movies) => {
+        moviesList.value = movies;
+    }
+
     watch(width, () => onWidthChange(selectedMovie));
 
-    return { width, selectedMovie, handleChangeMovie };
+    return { width, selectedMovie, handleChangeMovie, updateMoviesList, moviesList };
   },
 };
 </script>

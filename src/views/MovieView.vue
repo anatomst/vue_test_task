@@ -80,11 +80,11 @@
 <script>
 import { computed, onMounted, ref, toRefs, watch } from '@vue/runtime-core';
 import { useRoute } from 'vue-router';
-import { loadMovie } from '../api/movie';
 import Star from '../assets/images/star.svg';
 import Arrow from '../assets/images/arrow.svg';
 import CustomButton from '@/components/CustomButton.vue';
 import { useRedirectTo } from '@/hooks/useRedirectTo';
+import {loadMovie} from "@/api/movie";
 
 export default {
   components: {
@@ -99,30 +99,39 @@ export default {
       type: Number,
       default: 0,
     },
+    moviesList: {
+      type: Array, default: [],
+    }
   },
 
   setup(props) {
     const route = useRoute();
     const movie = ref();
-    const { selectedMovie, screenWidth } = toRefs(props);
+    const { selectedMovie, screenWidth, moviesList } = toRefs(props);
     const { redirectTo } = useRedirectTo();
 
     const getMovie = async () => {
-      const { movieData, error } = await loadMovie(
-        screenWidth.value > 900 ? selectedMovie.value : route.params.id,
-      );
+        if (!moviesList.value.length && screenWidth.value <= 900) {
+            const { movieData, error } = await loadMovie(route.params.id);
 
-      if (error) {
-        redirectTo('not-found');
-        return;
-      }
+            if (error) {
+                redirectTo('not-found');
+                return;
+            }
 
-      movie.value = movieData;
+            movie.value = movieData;
+        } else {
+            movie.value = moviesList.value[screenWidth.value > 900 ? selectedMovie.value - 1 : route.params.id - 1];
+        }
     };
 
     onMounted(getMovie);
 
     watch(selectedMovie, () => getMovie());
+
+    watch(moviesList, () => {
+        getMovie();
+    })
 
     const genres = computed(() => {
       return movie.value.genres.map((genre) => genre.title).join(', ');

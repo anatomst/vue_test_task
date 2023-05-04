@@ -49,6 +49,7 @@ export default {
           },
         });
       }
+        emit('change-movie', movie.value.id);
     };
     return {
       Star,
